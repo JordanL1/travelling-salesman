@@ -18,9 +18,9 @@ def getShortestRoutes(city_map):
             if r not in minRoutes:
                 minRoutes.append(r)
 
-    print("Total permutations: " + str(len(routes)))
-    print("Minimum route cost: " + str(minCost))
-    print("Shortest routes: " + str(minRoutes))
+    print(f"Total permutations: {len(routes)}")
+    print(f"Minimum route cost: {minCost}")
+    print(f"Shortest routes: {minRoutes}")
 
     return minRoutes
 
