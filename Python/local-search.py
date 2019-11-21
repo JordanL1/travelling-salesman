@@ -9,7 +9,6 @@ def local_search(city_map):
     shortest_cost = get_route_cost(shortest, city_map)
     print(f"Shortest Random: {shortest} Costing: {shortest_cost}")
 
-
     neighbourhood = get_2opt_neighbourhood(shortest)
     shortest_neighbour = get_shortest_in_neighbourhood(neighbourhood, city_map)
 
@@ -19,6 +18,39 @@ def local_search(city_map):
         shortest_neighbour = get_shortest_in_neighbourhood(neighbourhood, city_map)
 
     return shortest_neighbour
+
+def local_search_with_random_restart(city_map, time_limit):
+    city_list = get_city_IDs(city_map)
+    finish_time = time.time() + time_limit
+    # Initialise
+    random_route = get_random_route_permutation(city_list)
+    shortest = random_route
+    shortest_cost = get_route_cost(shortest, city_map)
+
+    while time.time() < finish_time:
+        random_route = get_random_route_permutation(city_list)
+        cost = get_route_cost(random_route, city_map)
+
+        if cost < shortest_cost:
+            shortest = random_route
+            shortest_cost = cost
+            neighbourhood = get_2opt_neighbourhood(shortest)
+            shortest_neighbour = get_shortest_in_neighbourhood(neighbourhood, city_map)[0]
+            print("Searching neighbourhood...")
+
+            while get_route_cost(shortest_neighbour,city_map) < shortest_cost:
+                shortest = shortest_neighbour
+                shortest_cost = get_route_cost(shortest, city_map)
+                neighbourhood = get_2opt_neighbourhood(shortest)
+                shortest_neighbour = get_shortest_in_neighbourhood(neighbourhood, city_map)[0]
+        else:
+            print("Searching for new shortest random...")
+
+    print(f"Shortest route: {shortest}")
+    print(f"Costing: {shortest_cost}")
+    return shortest
+
+
 
 def random_search_for_shortest_routes(city_map, run_time):
     finish_time = time.time() + run_time
