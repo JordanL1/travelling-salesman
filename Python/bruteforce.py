@@ -1,9 +1,11 @@
 import math
+import random
+import time
 from itertools import permutations
 
 def getShortestRoutes(city_map):
-    """ Given a map of city names/IDs, find the shortest route visiting each
-    city exactly once and returning to the start.
+    """ Given a map of city names/IDs, search through every valid tour and return the shortest
+    route(s) found.
     """
     routes = getPermutations2(getCityIDs(city_map))
     minCost = getRouteCost(routes[0], city_map)
@@ -19,6 +21,34 @@ def getShortestRoutes(city_map):
                 minRoutes.append(r)
 
     print(f"Total permutations: {len(routes)}")
+    print(f"Minimum route cost: {minCost}")
+    print(f"Shortest routes: {minRoutes}")
+
+    return minRoutes
+
+def getShortestRoutesTimed(city_map, time_limit):
+    """ Given a map of city names/IDs and a time limit (seconds), search randomly through possible
+    tours until the time limit has elapsed, then return the shortest route found.
+    """
+    finish_time = time.time() + time_limit
+    iterations = 0
+    route = get_random_route_permutation(getCityIDs(city_map))
+    minCost = getRouteCost(route, city_map)
+    minRoutes = [route]
+
+    while time.time() < finish_time:
+        iterations += 1
+        route = get_random_route_permutation(getCityIDs(city_map))
+        cost = getRouteCost(route, city_map)
+
+        if cost < minCost:
+            minCost = cost
+            minRoutes = [route]
+        elif cost == minCost:
+            if route not in minRoutes:
+                minRoutes.append(route)
+
+    print(f"Permutations checked: {iterations}")
     print(f"Minimum route cost: {minCost}")
     print(f"Shortest routes: {minRoutes}")
 
@@ -64,6 +94,9 @@ def getPermutations(current, remaining):
 def getPermutations2(cities):
     return list(permutations(cities))
 
+def get_random_route_permutation(cities):
+    return random.sample(cities, len(cities))
+
 def getCitiesFromFile(fileName):
     """ Given a CSV filename, return a dictionary mapping a city name or ID
     to a tuple containing its 2D coordinates.
@@ -87,3 +120,4 @@ def getCityIDs(cities):
     return list(cities.keys())
 
 getShortestRoutes(getCitiesFromFile("cities.csv"))
+getShortestRoutesTimed(getCitiesFromFile("ulysses.csv"), 5)
