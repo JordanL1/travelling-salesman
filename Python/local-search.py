@@ -19,37 +19,45 @@ def local_search(city_map):
 
     return shortest_neighbour
 
+
 def local_search_with_random_restart(city_map, time_limit):
     city_list = get_city_IDs(city_map)
     finish_time = time.time() + time_limit
-    # Initialise
     random_route = get_random_route_permutation(city_list)
-    shortest = random_route
-    shortest_cost = get_route_cost(shortest, city_map)
+    global_shortest = random_route
+    global_shortest_cost = get_route_cost(global_shortest, city_map)
 
     while time.time() < finish_time:
+        # Pick and evaluate a random route
+        print(f"Picking random route...")
         random_route = get_random_route_permutation(city_list)
         cost = get_route_cost(random_route, city_map)
 
-        if cost < shortest_cost:
-            shortest = random_route
-            shortest_cost = cost
-            neighbourhood = get_2opt_neighbourhood(shortest)
+        if cost < global_shortest_cost:
+            global_shortest = random_route
+            global_shortest_cost = cost
+
+        # Start iterative neighbourhood search
+        print(f"Starting neighbourhood search...")
+        neighbourhood = get_2opt_neighbourhood(random_route)
+        shortest_neighbour = get_shortest_in_neighbourhood(neighbourhood, city_map)[0]
+        shortest_neighbour_cost = get_route_cost(shortest_neighbour, city_map)
+        current_shortest = cost
+
+        while shortest_neighbour_cost < current_shortest:
+            print(f"Stepping to next neighbour...")
+            if shortest_neighbour_cost < global_shortest_cost:
+                global_shortest = shortest_neighbour
+                global_shortest_cost = shortest_neighbour_cost
+
+            current_shortest = shortest_neighbour_cost
+            neighbourhood = get_2opt_neighbourhood(shortest_neighbour)
             shortest_neighbour = get_shortest_in_neighbourhood(neighbourhood, city_map)[0]
-            print("Searching neighbourhood...")
+            shortest_neighbour_cost = get_route_cost(shortest_neighbour, city_map)
 
-            while get_route_cost(shortest_neighbour,city_map) < shortest_cost:
-                shortest = shortest_neighbour
-                shortest_cost = get_route_cost(shortest, city_map)
-                neighbourhood = get_2opt_neighbourhood(shortest)
-                shortest_neighbour = get_shortest_in_neighbourhood(neighbourhood, city_map)[0]
-        else:
-            print("Searching for new shortest random...")
-
-    print(f"Shortest route: {shortest}")
-    print(f"Costing: {shortest_cost}")
-    return shortest
-
+    print(f"Shortest route: {global_shortest}")
+    print(f"Costing: {global_shortest_cost}")
+    return global_shortest
 
 
 def random_search_for_shortest_routes(city_map, run_time):
