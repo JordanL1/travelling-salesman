@@ -100,8 +100,11 @@ def get_random_route_permutation(cities):
 def getCitiesFromFile(fileName):
     """ Given a CSV filename, return a dictionary mapping a city name or ID
     to a tuple containing its 2D coordinates.
+    NOTE: Skips the first two lines, assuming they are headers.
     """
     csv = open(fileName, 'r')
+    next(csv)
+    next(csv)
     cities = {}
     for line in csv:
         city = line.rstrip().split(",")
@@ -119,5 +122,4 @@ def getCityIDs(cities):
     """
     return list(cities.keys())
 
-getShortestRoutes(getCitiesFromFile("cities.csv"))
-getShortestRoutesTimed(getCitiesFromFile("ulysses.csv"), 5)
+getShortestRoutesTimed(getCitiesFromFile("cities18_9.csv"), 3)

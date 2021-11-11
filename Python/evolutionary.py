@@ -1,7 +1,7 @@
 import math
 import random
 
-FILE_NAME = "ulysses.csv"
+FILE_NAME = ""
 
 class Evolutionary:
     POPULATION_SIZE = 100
@@ -158,13 +158,16 @@ class Evolutionary:
         return math.sqrt((coordB[0] - coordA[0])**2 + (coordB[1] - coordA[1])**2)
 
     def get_random_route_permutation(self):
-        return random.sample(self.cities, len(cities))
+        return random.sample(self.cities, len(cities)-1)
 
 def get_cities_from_file(file_name):
     """ Given a CSV filename, return a dictionary mapping a city name or ID
     to a tuple containing its 2D coordinates.
+    NOTE: Skips the first two lines, assuming they are headers.
     """
     csv = open(file_name, 'r')
+    next(csv)
+    next(csv)
     cities = {}
     for line in csv:
         city = line.rstrip().split(",")

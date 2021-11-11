@@ -115,8 +115,11 @@ def get_shortest_in_neighbourhood(neighbourhood, city_map):
 def get_cities_from_file(file_name):
     """ Given a CSV filename, return a dictionary mapping a city name or ID
     to a tuple containing its 2D coordinates.
+    NOTE: Skips the first two lines, assuming they are headers.
     """
     csv = open(file_name, 'r')
+    next(csv)
+    next(csv)
     cities = {}
     for line in csv:
         city = line.rstrip().split(",")
