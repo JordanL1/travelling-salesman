@@ -78,8 +78,8 @@ def random_search_for_shortest_routes(city_map, run_time):
             if route not in shortest_routes:
                 shortest_routes.append(route)
 
-    print(min_cost)
-    print(shortest_routes)
+    print(f"Minimum cost: {min_cost}")
+    print(f"Shortest routes: {shortest_routes}")
     return shortest_routes
 
 def get_2opt_neighbourhood(route):
